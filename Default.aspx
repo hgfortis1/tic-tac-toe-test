@@ -10,6 +10,15 @@
 src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.5.1.min.js"></script> 
   <script type="text/javascript">
 
+      var ID = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+
+
+      // Possible Solution Array 2D
+
+      var SolArr = [[1, 2, 3], [4, 5, 6], [7, 8, 9], [1, 4, 7],
+
+                     [2, 5, 8], [3, 6, 9], [1, 5, 9], [3, 5, 7]];
       // For Tic
 
       function Tic(obj) {
@@ -26,35 +35,63 @@ src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.5.1.min.js"></script>
 
           }
 
-          if (obj.value != "") {
+          if (document.getElementById('<%= txtName.ClientID  %>').value == "") {
 
-              alert("You can't change value");
+              alert("Name invalid");
 
               return false;
 
           }
 
+          if (document.getElementById('<%= txtGame.ClientID  %>').value == "") {
+
+              alert("Name invalid");
+
+              return false;
+
+          }
+
+          // alert(document.getElementById('<%=  hfPlayerTurn.ClientID  %>').value);
+          if (document.getElementById('<%=  hfPlayed.ClientID  %>').value == "yes") {
+              if (document.getElementById('<%=  hfPlayerTurn.ClientID  %>').value != document.getElementById('<%=  txtName.ClientID  %>').value) {
+                  alert(document.getElementById('<%=  hfPlayerTurn.ClientID  %>').value);
+                  alert(document.getElementById('<%=  txtName.ClientID  %>').value);
+                  alert("You cant play twice");
+                  return false;
+              }
+          }
+
+          if (obj.value != "") {
+
+              alert("Input Selected Already");
+              alert(obj.value);
+              return false;
+
+          }
+          //alert(TicValue);
           if (TicValue == "X") {
 
-              obj.value = TicValue;
-
+              obj.value = "O";// TicValue;
+              document.getElementById('<%=  hfValue.ClientID  %>').value = "O";
               val = "O";
 
           }
 
           else {
 
-              obj.value = TicValue;
-
+              obj.value = "X";// TicValue;
+              document.getElementById('<%=  hfValue.ClientID  %>').value = "X";
               val = "X";
 
           }
 
 
 
-          CheckForResult();
+          //CheckForResult();
+         // alert(val);
+          //document.getElementById('<%=  hfValue.ClientID  %>').value = val;
 
-          document.getElementById('<%=  hfValue.ClientID  %>').value = val;
+          return true;
 
       }
 
@@ -109,25 +146,30 @@ src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.5.1.min.js"></script>
 
       $(document).ready(function () {
 
-          // setTimeout(GetLatest, 5000);
+          setInterval(GetLatest, 3000);
 
           $("#1").click(function () {
 
-              var response = Tic($(document.getElementById('1')));
+              var response = Tic(document.getElementById('1'));
               if (response == true) {
+
                   $.ajax({
-                      type: "POST", //GET or POST or PUT or DELETE verb
+                      type: "GET", //GET or POST or PUT or DELETE verb
                       url: "Service.svc/Play", // Location of the service
-                      data: "{sName=" + document.getElementById('<%=  txtName.ClientID  %>').value + ", sGame=" + document.getElementById('<%=  txtGame.ClientID  %>').value +
-                    ", sPoint=1, sValue=" + document.getElementById('<%=  hfValue.ClientID  %>').value + " }", //Data sent to server
+                      data: { 'sName': document.getElementById('<%=  txtName.ClientID  %>').value, 'sGame': document.getElementById('<%=  txtGame.ClientID  %>').value, 'sPoint': 1,
+                          'sValue': document.getElementById('<%=  hfValue.ClientID  %>').value
+                      }, //Data sent to server
                       contentType: "application/json",
                       dataType: "json",
-                      processdata: false, //True or False
+                      processdata: true, //True or False
                       success: function () {//On Successfull service call
                           //  ServiceSucceeded(msg);
-                          alert('called');
+                          document.getElementById('<%=  hfPlayed.ClientID  %>').value = "yes";
+                          CheckForResult();
                       },
-                      error: ServiceFailed// When Service call fails
+                      error: function () {
+                          alert('Service call failed1');
+                      } // When Service call fails
                   });
                   function ServiceFailed(result) {
                       alert('Service call failed');
@@ -139,189 +181,164 @@ src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.5.1.min.js"></script>
 
           $("#2").click(function () {
 
-              var response = Tic($(document.getElementById('2')));
+              var response = Tic(document.getElementById('2'));
               if (response == true) {
 
                   $.ajax({
-                      type: "POST", //GET or POST or PUT or DELETE verb
+                      type: "GET", //GET or POST or PUT or DELETE verb
                       url: "Service.svc/Play", // Location of the service
-                      data: "{sName=" + document.getElementById('<%=  txtName.ClientID  %>').value + ", sGame=" + document.getElementById('<%=  txtGame.ClientID  %>').value +
-                    ", sPoint=1, sValue=" + document.getElementById('<%=  hfValue.ClientID  %>').value + " }", //Data sent to server
+                      data: { 'sName': document.getElementById('<%=  txtName.ClientID  %>').value, 'sGame': document.getElementById('<%=  txtGame.ClientID  %>').value, 'sPoint': 2,
+                          'sValue': document.getElementById('<%=  hfValue.ClientID  %>').value
+                      }, //Data sent to server
                       contentType: "application/json",
                       dataType: "json",
-                      processdata: false, //True or False
+                      processdata: true, //True or False
                       success: function () {//On Successfull service call
-                          //  ServiceSucceeded(msg);
-                          alert('called');
+                          document.getElementById('<%=  hfPlayed.ClientID  %>').value = "yes";
+                          CheckForResult();
                       },
-                      error: ServiceFailed// When Service call fails
+                      error: function () {
+                          alert('Service call failed1');
+                      } // When Service call fails
                   });
-                  function ServiceFailed(result) {
-                      alert('Service call failed');
 
-                  };
               }
 
           });
 
-          $("#2").click(function () {
 
-              var response = Tic($(document.getElementById('1')));
-              if (response == true) {
-
-                  $.ajax({
-                      type: "POST", //GET or POST or PUT or DELETE verb
-                      url: "Service.svc/Play", // Location of the service
-                      data: "{sName=" + document.getElementById('<%=  txtName.ClientID  %>').value + ", sGame=" + document.getElementById('<%=  txtGame.ClientID  %>').value +
-                    ", sPoint=1, sValue=" + document.getElementById('<%=  hfValue.ClientID  %>').value + " }", //Data sent to server
-                      contentType: "application/json",
-                      dataType: "json",
-                      processdata: false, //True or False
-                      success: function () {//On Successfull service call
-                          //  ServiceSucceeded(msg);
-                          alert('called');
-                      },
-                      error: ServiceFailed// When Service call fails
-                  });
-                  function ServiceFailed(result) {
-                      alert('Service call failed');
-
-                  };
-              }
-
-          });
 
           $("#3").click(function () {
 
-              var response = Tic($(document.getElementById('1')));
+              var response = Tic(document.getElementById('3'));
               if (response == true) {
 
                   $.ajax({
-                      type: "POST", //GET or POST or PUT or DELETE verb
+                      type: "GET", //GET or POST or PUT or DELETE verb
                       url: "Service.svc/Play", // Location of the service
-                      data: "{sName=" + document.getElementById('<%=  txtName.ClientID  %>').value + ", sGame=" + document.getElementById('<%=  txtGame.ClientID  %>').value +
-                    ", sPoint=1, sValue=" + document.getElementById('<%=  hfValue.ClientID  %>').value + " }", //Data sent to server
+                      data: { 'sName': document.getElementById('<%=  txtName.ClientID  %>').value, 'sGame': document.getElementById('<%=  txtGame.ClientID  %>').value, 'sPoint': 3,
+                          'sValue': document.getElementById('<%=  hfValue.ClientID  %>').value
+                      }, //Data sent to server
                       contentType: "application/json",
                       dataType: "json",
-                      processdata: false, //True or False
+                      processdata: true, //True or False
                       success: function () {//On Successfull service call
-                          //  ServiceSucceeded(msg);
-                          alert('called');
+                          document.getElementById('<%=  hfPlayed.ClientID  %>').value = "yes";
+                          CheckForResult();
                       },
-                      error: ServiceFailed// When Service call fails
+                      error: function () {
+                          alert('Service call failed1');
+                      } // When Service call fails
                   });
-                  function ServiceFailed(result) {
-                      alert('Service call failed');
 
-                  };
               }
 
           });
 
           $("#4").click(function () {
 
-              var response = Tic($(document.getElementById('1')));
+              var response = Tic(document.getElementById('4')); ;
               if (response == true) {
 
                   $.ajax({
-                      type: "POST", //GET or POST or PUT or DELETE verb
+                      type: "GET", //GET or POST or PUT or DELETE verb
                       url: "Service.svc/Play", // Location of the service
-                      data: "{sName=" + document.getElementById('<%=  txtName.ClientID  %>').value + ", sGame=" + document.getElementById('<%=  txtGame.ClientID  %>').value +
-                    ", sPoint=1, sValue=" + document.getElementById('<%=  hfValue.ClientID  %>').value + " }", //Data sent to server
+                      data: { 'sName': document.getElementById('<%=  txtName.ClientID  %>').value, 'sGame': document.getElementById('<%=  txtGame.ClientID  %>').value, 'sPoint': 4,
+                          'sValue': document.getElementById('<%=  hfValue.ClientID  %>').value
+                      }, //Data sent to server
                       contentType: "application/json",
                       dataType: "json",
-                      processdata: false, //True or False
+                      processdata: true, //True or False
                       success: function () {//On Successfull service call
-                          //  ServiceSucceeded(msg);
-                          alert('called');
+                          document.getElementById('<%=  hfPlayed.ClientID  %>').value = "yes";
+                          CheckForResult();
                       },
-                      error: ServiceFailed// When Service call fails
+                      error: function () {
+                          alert('Service call failed1');
+                      } // When Service call fails
                   });
-                  function ServiceFailed(result) {
-                      alert('Service call failed');
 
-                  };
               }
 
           });
 
           $("#5").click(function () {
 
-              var response = Tic($(document.getElementById('1')));
+              var response = Tic(document.getElementById('5')); ;
               if (response == true) {
 
                   $.ajax({
-                      type: "POST", //GET or POST or PUT or DELETE verb
+                      type: "GET", //GET or POST or PUT or DELETE verb
                       url: "Service.svc/Play", // Location of the service
-                      data: "{sName=" + document.getElementById('<%=  txtName.ClientID  %>').value + ", sGame=" + document.getElementById('<%=  txtGame.ClientID  %>').value +
-                    ", sPoint=1, sValue=" + document.getElementById('<%=  hfValue.ClientID  %>').value + " }", //Data sent to server
+                      data: { 'sName': document.getElementById('<%=  txtName.ClientID  %>').value, 'sGame': document.getElementById('<%=  txtGame.ClientID  %>').value, 'sPoint': 5,
+                          'sValue': document.getElementById('<%=  hfValue.ClientID  %>').value
+                      }, //Data sent to server
                       contentType: "application/json",
                       dataType: "json",
-                      processdata: false, //True or False
+                      processdata: true, //True or False
                       success: function () {//On Successfull service call
-                          //  ServiceSucceeded(msg);
-                          alert('called');
+                          document.getElementById('<%=  hfPlayed.ClientID  %>').value = "yes";
+                          CheckForResult();
                       },
-                      error: ServiceFailed// When Service call fails
+                      error: function () {
+                          alert('Service call failed1');
+                      } // When Service call fails
                   });
-                  function ServiceFailed(result) {
-                      alert('Service call failed');
 
-                  };
               }
 
           });
 
           $("#6").click(function () {
 
-              var response = Tic($(document.getElementById('1')));
+              var response = Tic(document.getElementById('6')); ;
               if (response == true) {
 
                   $.ajax({
-                      type: "POST", //GET or POST or PUT or DELETE verb
+                      type: "GET", //GET or POST or PUT or DELETE verb
                       url: "Service.svc/Play", // Location of the service
-                      data: "{sName=" + document.getElementById('<%=  txtName.ClientID  %>').value + ", sGame=" + document.getElementById('<%=  txtGame.ClientID  %>').value +
-                    ", sPoint=1, sValue=" + document.getElementById('<%=  hfValue.ClientID  %>').value + " }", //Data sent to server
+                      data: { 'sName': document.getElementById('<%=  txtName.ClientID  %>').value, 'sGame': document.getElementById('<%=  txtGame.ClientID  %>').value, 'sPoint': 6,
+                          'sValue': document.getElementById('<%=  hfValue.ClientID  %>').value
+                      }, //Data sent to server
                       contentType: "application/json",
                       dataType: "json",
-                      processdata: false, //True or False
+                      processdata: true, //True or False
                       success: function () {//On Successfull service call
-                          //  ServiceSucceeded(msg);
-                          alert('called');
+                          document.getElementById('<%=  hfPlayed.ClientID  %>').value = "yes";
+                          CheckForResult();
                       },
-                      error: ServiceFailed// When Service call fails
+                      error: function () {
+                          alert('Service call failed1');
+                      } // When Service call fails
                   });
-                  function ServiceFailed(result) {
-                      alert('Service call failed');
 
-                  };
               }
 
           });
 
           $("#7").click(function () {
 
-              var response = Tic($(document.getElementById('1')));
+              var response = Tic(document.getElementById('7')); ;
               if (response == true) {
 
                   $.ajax({
-                      type: "POST", //GET or POST or PUT or DELETE verb
+                      type: "GET", //GET or POST or PUT or DELETE verb
                       url: "Service.svc/Play", // Location of the service
-                      data: "{sName=" + document.getElementById('<%=  txtName.ClientID  %>').value + ", sGame=" + document.getElementById('<%=  txtGame.ClientID  %>').value +
-                    ", sPoint=1, sValue=" + document.getElementById('<%=  hfValue.ClientID  %>').value + " }", //Data sent to server
+                      data: { 'sName': document.getElementById('<%=  txtName.ClientID  %>').value, 'sGame': document.getElementById('<%=  txtGame.ClientID  %>').value, 'sPoint': 7,
+                          'sValue': document.getElementById('<%=  hfValue.ClientID  %>').value
+                      }, //Data sent to server
                       contentType: "application/json",
                       dataType: "json",
-                      processdata: false, //True or False
+                      processdata: true, //True or False
                       success: function () {//On Successfull service call
-                          //  ServiceSucceeded(msg);
-                          alert('called');
+                          document.getElementById('<%=  hfPlayed.ClientID  %>').value = "yes";
+                          CheckForResult();
                       },
-                      error: ServiceFailed// When Service call fails
+                      error: function () {
+                          // alert('Service call failed1');
+                      } // When Service call fails
                   });
-                  function ServiceFailed(result) {
-                      alert('Service call failed');
 
-                  };
 
               }
 
@@ -329,78 +346,138 @@ src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.5.1.min.js"></script>
 
           $("#8").click(function () {
 
-              var response = Tic($(document.getElementById('1')));
+              var response = Tic(document.getElementById('8'));
               if (response == true) {
 
                   $.ajax({
-                      type: "POST", //GET or POST or PUT or DELETE verb
+                      type: "GET", //GET or POST or PUT or DELETE verb
                       url: "Service.svc/Play", // Location of the service
-                      data: "{sName=" + document.getElementById('<%=  txtName.ClientID  %>').value + ", sGame=" + document.getElementById('<%=  txtGame.ClientID  %>').value +
-                    ", sPoint=1, sValue=" + document.getElementById('<%=  hfValue.ClientID  %>').value + " }", //Data sent to server
+                      data: { 'sName': document.getElementById('<%=  txtName.ClientID  %>').value, 'sGame': document.getElementById('<%=  txtGame.ClientID  %>').value, 'sPoint': 8,
+                          'sValue': document.getElementById('<%=  hfValue.ClientID  %>').value
+                      }, //Data sent to server
                       contentType: "application/json",
                       dataType: "json",
-                      processdata: false, //True or False
+                      processdata: true, //True or False
                       success: function () {//On Successfull service call
-                          //  ServiceSucceeded(msg);
-                          alert('called');
+                          document.getElementById('<%=  hfPlayed.ClientID  %>').value = "yes";
+                          CheckForResult();
                       },
-                      error: ServiceFailed// When Service call fails
+                      error: function () {
+                          alert('Service call failed1');
+                      } // When Service call fails
                   });
-                  function ServiceFailed(result) {
-                      alert('Service call failed');
 
-                  };
               }
 
           });
 
           $("#9").click(function () {
 
-              var response = Tic($(document.getElementById('1')));
+              var response = Tic(document.getElementById('9'));
               if (response == true) {
 
                   $.ajax({
-                      type: "POST", //GET or POST or PUT or DELETE verb
+                      type: "GET", //GET or POST or PUT or DELETE verb
                       url: "Service.svc/Play", // Location of the service
-                      data: "{sName=" + document.getElementById('<%=  txtName.ClientID  %>').value + ", sGame=" + document.getElementById('<%=  txtGame.ClientID  %>').value +
-                    ", sPoint=1, sValue=" + document.getElementById('<%=  hfValue.ClientID  %>').value + " }", //Data sent to server
+                      data: { 'sName': document.getElementById('<%=  txtName.ClientID  %>').value, 'sGame': document.getElementById('<%=  txtGame.ClientID  %>').value, 'sPoint': 9,
+                          'sValue': document.getElementById('<%=  hfValue.ClientID  %>').value
+                      }, //Data sent to server
                       contentType: "application/json",
                       dataType: "json",
-                      processdata: false, //True or False
+                      processdata: true, //True or False
                       success: function () {//On Successfull service call
-                          //  ServiceSucceeded(msg);
-                          alert('called');
+                          document.getElementById('<%=  hfPlayed.ClientID  %>').value = "yes";
+                          CheckForResult();
                       },
-                      error: ServiceFailed// When Service call fails
+                      error: function () {
+                          alert('Service call failed1');
+                      } // When Service call fails
                   });
-                  function ServiceFailed(result) {
-                      alert('Service call failed');
 
-                  };
               }
 
           });
 
           function GetLatest() {
-              $.ajax({
-                  type: "POST", //GET or POST or PUT or DELETE verb
-                  url: "Service.svc/GetLatestMove", // Location of the service
-                  data: "{sName=" + document.getElementById('<%=  txtName.ClientID  %>').value + ", sGame=" + document.getElementById('<%=  txtGame.ClientID  %>').value + " }", //Data sent to server
-                  contentType: "application/json",
-                  dataType: "json",
-                  processdata: false, //True or False
-                  success: function () {//On Successfull service call
-                      //  ServiceSucceeded(msg);
-                      //TODO:Map Play to input
+              if (document.getElementById('<%= hfGameOver.ClientID  %>').value != "Yes") {
+                  $.ajax({
+                      type: "GET", //GET or POST or PUT or DELETE verb
+                      url: "Service.svc/GetLatestMove", // Location of the service
+                      data: { 'sName': document.getElementById('<%=  txtName.ClientID  %>').value, 'sGame': document.getElementById('<%=  txtGame.ClientID  %>').value }, //Data sent to server
+                      contentType: "application/json",
+                      dataType: "json",
+                      processdata: true, //True or False
+                      success: function (result) {//On Successfull service call
+                          //  ServiceSucceeded(msg);
+                          //TODO:Map Play to input
 
-                      alert('called');
-                  },
-                  error: ServiceFailed// When Service call fails
-              });
-              function ServiceFailed(result) {
-                  alert('Service call failed');
+                          if (result != null) {
+                              if (result.GetLatestMoveResult.PlayerTurn != "") {
+                                  document.getElementById('<%=  hfPlayerTurn.ClientID  %>').value = result.GetLatestMoveResult.PlayerTurn
+                              }
+                              if (result.GetLatestMoveResult.LastPlayed != "") {
+                                  //alert(result.GetLatestMoveResult.LastPlayed);
+                                  document.getElementById('<%=  hfValue.ClientID  %>').value = result.GetLatestMoveResult.LastPlayed
 
+                              }
+                              if (result.GetLatestMoveResult.Plays != null) {
+                                  for (var i = 0; i < result.GetLatestMoveResult.Plays.length; i++) {
+
+                                      if (result.GetLatestMoveResult.Plays[i].Position == 1) {
+
+                                          document.getElementById('1').value = result.GetLatestMoveResult.Plays[i].PositionValue;
+                                      }
+                                      else if (result.GetLatestMoveResult.Plays[i].Position == 2) {
+
+                                          document.getElementById('2').value = result.GetLatestMoveResult.Plays[i].PositionValue;
+                                      }
+                                      else if (result.GetLatestMoveResult.Plays[i].Position == 3) {
+
+                                          document.getElementById('3').value = result.GetLatestMoveResult.Plays[i].PositionValue;
+                                      }
+                                      else if (result.GetLatestMoveResult.Plays[i].Position == 4) {
+
+                                          document.getElementById('4').value = result.GetLatestMoveResult.Plays[i].PositionValue;
+                                      }
+                                      else if (result.GetLatestMoveResult.Plays[i].Position == 5) {
+
+                                          document.getElementById('5').value = result.GetLatestMoveResult.Plays[i].PositionValue;
+                                      }
+                                      else if (result.GetLatestMoveResult.Plays[i].Position == 6) {
+
+                                          document.getElementById('6').value = result.GetLatestMoveResult.Plays[i].PositionValue;
+                                      }
+                                      else if (result.GetLatestMoveResult.Plays[i].Position == 7) {
+
+                                          document.getElementById('7').value = result.GetLatestMoveResult.Plays[i].PositionValue;
+                                      }
+                                      else if (result.GetLatestMoveResult.Plays[i].Position == 8) {
+
+                                          document.getElementById('8').value = result.GetLatestMoveResult.Plays[i].PositionValue;
+                                      }
+                                      else if (result.GetLatestMoveResult.Plays[i].Position == 9) {
+
+                                          document.getElementById('9').value = result.GetLatestMoveResult.Plays[i].PositionValue;
+                                      }
+
+                                  }
+                              }
+
+                          }
+                          CheckForResult();
+                          //  alert('called')
+                          //alert(result.GetLatestMoveResult.NameOfGame);
+
+
+                          // alert('called');
+                      },
+                      error: function () {
+                          alert('Service call failed1');
+                      } // When Service call fails
+
+                  });
               }
+
           };
       }
     );
@@ -480,11 +557,13 @@ src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.5.1.min.js"></script>
             </tr>
         </table>
         <br />
-        <input type="button" id="btnPlay" onclick="return Play();" value="Play" style="width: 100px;
+        <%--<input type="button" id="btnPlay" onclick="return Play();" value="Play" style="width: 100px;
             height: 30px; font: verdana 12pt;" /><asp:Button ID="Button1" runat="server" Text="Refresh" style="width: 100px;
-            height: 30px; font: verdana 12pt;" />
+            height: 30px; font: verdana 12pt;" />--%>
         <asp:HiddenField ID="hfGameOver" runat="server" Value="No" />
-        <asp:HiddenField ID="hfValue" runat="server" Value="X" />
+          <asp:HiddenField ID="hfPlayerTurn" runat="server" Value="" />
+                <asp:HiddenField ID="hfPlayed" runat="server" Value="No" />
+        <asp:HiddenField ID="hfValue" runat="server" Value="O" />
     </div>
 
   

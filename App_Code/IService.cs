@@ -33,6 +33,7 @@ public class Plays
     //bool boolValue = true;
     int iPosition;
     string sPositionValue = "";
+    
 
     public Plays(int iPosition, string sPositionValue)
     {
@@ -53,6 +54,8 @@ public class Plays
         get { return sPositionValue; }
         set { sPositionValue = value; }
     }
+
+    
 }
 
 
@@ -63,11 +66,19 @@ public class Games
     string sPlayerTurn = "";
     string sPlayerName1 = "";
     string sPlayerName2 = "";
+    string sLastPlayed = "";
     List<Plays> colPlays;
 
     public Games(string NameOfGame)
     {
         this.sNameOfGame = NameOfGame;
+    }
+
+    [DataMember]
+    public string LastPlayed
+    {
+        get { return sLastPlayed; }
+        set { sLastPlayed = value; }
     }
 
     //[DataMember]
