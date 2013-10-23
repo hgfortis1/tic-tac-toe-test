@@ -1,0 +1,5 @@
+﻿How to improve this test?
+1. Give an outline about what would be required prior to test? e.g. Is it a Web Application/ Web Service?
+2. Specific Details about how tic-tac-toe is played would be nice, rules etc.. For example, Do i choose "X" or "O" for each play or its automatic that one i click "X" then the next player move is "O"
+2. I may have spent too much time thinking about how to do this one. Reason for this, I could have done a very simple ASP.NET app using session variable to store moves. 
+Since the phrase "Moves sent to Server" was used, I was thinking using a webservice.

@@ -1,0 +1,54 @@
+﻿//Sample
+Table
+--------------------
+Columns
+
+
+
+Game
+---------------
+Code int
+Description varchar(50)
+CreatedBy VARHCAR(50)
+CreatedDate SMALLDATETIME
+StatusCode CHAR(1)
+
+GameStatusCode
+------------------------------
+Code CHAR(1)
+Description varchar(50)
+
+
+
+Player
+------------------------------
+Username varchar(50)
+Name varchar(100)
+StatusCode CHAR(1)
+
+PlayerStatusCode
+------------------------------
+Code CHAR(1)
+Description varchar(50)
+
+GamePlayer
+----------------------------
+GameCode INT
+Username VARCHAR(50)
+JoinedDate SMALLDATETIME
+StatusCode CHAR(1)
+
+
+Plays
+-----------------------------
+Code INT
+GameCode INT
+Username VARCHAR(50)
+TransDate SMALLDATETIME
+PositionCode INT
+PositionValue CHAR(1)
+
+Position
+------------------------------
+Code INT
+Description varchar(50)
